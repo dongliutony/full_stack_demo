@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 
 class TodoCreate(BaseModel):
-    user_id: int
+    # user_id: int
     title: str
     description: Optional[str] = None
     due_date: Optional[datetime] = None
