@@ -1,0 +1,36 @@
+workspace:
+  name: todo-list-service
+  description: Full-stack todo list app using Refine + FastAPI + MySQL
+  repos:
+    - path: frontend
+      type: react
+      framework: refine
+      description: Refine frontend project using Ant Design
+    - path: backend
+      type: python
+      framework: fastapi
+      description: FastAPI backend with SQLModel ORM and JWT auth
+  environments:
+    - name: local-vm
+      description: Local dev using UTM-based Ubuntu VMs on macOS
+      services:
+        - mysql
+        - backend (uvicorn)
+        - frontend (vite)
+  tasks:
+    - name: Set up DB models for User and Todo
+      file: backend/app/models/
+    - name: Define Pydantic schemas for APIs
+      file: backend/app/schemas/
+    - name: Implement auth routes and JWT logic
+      file: backend/app/api/auth.py
+    - name: Implement todo CRUD API
+      file: backend/app/api/todo.py
+    - name: Connect Refine resource to REST API
+      file: frontend/src/refine/resources/todo.ts
+    - name: Design todo list and edit UIs
+      file: frontend/src/pages/
+  notes:
+    - "Use Cursor's Explain mode on model files to visualize relationships"
+    - "Use Cursor's Test mode to simulate API calls with sample data"
+    - "Refine resources should match backend endpoints exactly (REST paths)"

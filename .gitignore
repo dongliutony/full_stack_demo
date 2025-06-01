@@ -1,0 +1,25 @@
+# Root
+__pycache__/
+*.pyc
+*.log
+.env
+.env.*
+
+# Python backend
+/backend/venv/
+/backend/.pytest_cache/
+/backend/__pycache__/
+/backend/.mypy_cache/
+
+# Node frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+/frontend/.next/
+/frontend/.env.local
+/frontend/.turbo/
+
+# OS
+.DS_Store
+Thumbs.db
+

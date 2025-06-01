@@ -1,0 +1,84 @@
+Todo List 服务 - MVP 产品需求文档（PRD）
+1. 产品概述
+本产品为一个简洁高效的 Todo List 管理工具，支持用户注册与登录、任务的基本增删改查，以及状态标记与列表展示。前后端分离设计，具备良好的扩展能力，适用于日后迭代协作、标签、子任务、日历视图等功能。
+
+2. 用户角色
+注册用户：可管理自己的 todo 列表
+
+匿名用户：不支持（所有功能需登录后使用）
+
+3. 核心功能需求
+3.1 用户系统
+功能	描述
+用户注册	使用邮箱和密码注册新账号
+用户登录/登出	获取/撤销访问令牌（JWT）
+用户信息	获取当前登录用户信息
+
+3.2 Todo 管理
+功能	描述
+创建任务	字段包含：标题（必填）、描述、截止日期、优先级、是否完成状态
+编辑任务	修改任意字段
+删除任务	逻辑删除或直接物理删除
+获取任务列表	支持分页、按状态/优先级排序、时间过滤等
+更改任务状态	标记为完成/未完成
+
+4. 数据模型（初版草图）
+用户表（users）
+id: int (PK)
+
+email: string (unique)
+
+password_hash: string
+
+nickname: string
+
+created_at: datetime
+
+任务表（todos）
+id: int (PK)
+
+user_id: int (FK -> users.id)
+
+title: string
+
+description: text
+
+due_date: datetime (nullable)
+
+priority: enum('low', 'medium', 'high')
+
+is_completed: boolean
+
+created_at: datetime
+
+updated_at: datetime
+
+5. 非功能需求
+类型	描述
+安全性	所有 API 接口需鉴权，使用 JWT 机制
+响应时间	单次请求处理时间 < 200ms
+可扩展性	前后端代码结构模块化，后续支持 GraphQL / 多语言等
+本地部署	所有组件支持本地 VM 环境运行
+
+6. 技术栈确认
+层级	技术
+前端	React + Refine + AntD
+后端	FastAPI + SQLModel + JWT
+数据库	MySQL
+部署方式	本地 VM（macOS + UTM）
+API 类型	初期 REST，预留 GraphQL
+
+7. 后续可扩展方向（非 MVP 实现）
+子任务（任务树形结构）
+
+标签系统
+
+任务协作（权限控制）
+
+到期提醒 / 推送通知
+
+GraphQL 支持
+
+PWA / 移动适配
+
+
