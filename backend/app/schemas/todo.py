@@ -29,3 +29,27 @@ class TodoRead(BaseModel):
 
     class Config:
         orm_mode = True
+
+class TodoHistoryCreate(BaseModel):
+    todo_id: int
+    changed_at: datetime
+    field_changed: str
+    old_value: Optional[str] = None
+    new_value: Optional[str] = None
+
+class TodoHistoryUpdate(BaseModel):
+    changed_at: Optional[datetime] = None
+    field_changed: Optional[str] = None
+    old_value: Optional[str] = None
+    new_value: Optional[str] = None
+
+class TodoHistoryRead(BaseModel):
+    id: int
+    todo_id: int
+    changed_at: datetime
+    field_changed: str
+    old_value: Optional[str] = None
+    new_value: Optional[str] = None
+
+    class Config:
+        orm_mode = True

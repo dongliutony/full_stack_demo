@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.api import router as api_router
 from app.db.init_db import init_db
 from fastapi.middleware.cors import CORSMiddleware
+from app.graphql import graphql_app
 
 def lifespan(app: FastAPI):
     init_db()
@@ -24,6 +25,8 @@ app.add_middleware(
 )
 
 app.include_router(api_router)
+
+app.include_router(graphql_app, prefix="/graphql", tags=["graphql"])
 
 # @app.on_event("startup")
 # def on_startup():
