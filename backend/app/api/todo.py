@@ -5,16 +5,17 @@ from app.models.todo import Todo
 from app.schemas.todo import TodoCreate, TodoUpdate, TodoRead
 from datetime import datetime
 from typing import List
+from app.core.deps import get_current_user
+from app.models.user import User
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 router = APIRouter()
 
-# TODO: Implement get_current_user later with JWT token
-def get_current_user():
-    return 1
-
 @router.post("/", response_model=TodoRead)
-def create_todo(todo_in: TodoCreate, db: Session = Depends(get_session)):
-    user_id = get_current_user()
+def create_todo(todo_in: TodoCreate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
+    user_id = get_current_user(token, db).id
     todo = Todo(**todo_in.dict(), user_id=user_id)
     db.add(todo)
     db.commit()
@@ -22,22 +23,22 @@ def create_todo(todo_in: TodoCreate, db: Session = Depends(get_session)):
     return todo
 
 @router.get("/", response_model=List[TodoRead])
-def get_todos(db: Session = Depends(get_session)):
-    user_id = get_current_user()
+def get_todos(token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
+    user_id = get_current_user(token, db).id
     todos = db.exec(select(Todo).where(Todo.user_id == user_id)).all()
     return todos
 
 @router.get("/{todo_id}", response_model=TodoRead)
-def get_todo(todo_id: int, db: Session = Depends(get_session)):
-    user_id = get_current_user()
+def get_todo(todo_id: int,token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
+    user_id = get_current_user(token, db).id
     todo = db.get(Todo, todo_id)
     if not todo or todo.user_id != user_id:
         raise HTTPException(status_code=404, detail="Todo not found")
     return todo
 
 @router.put("/{todo_id}", response_model=TodoRead)
-def update_todo(todo_id: int, update: TodoUpdate, db: Session = Depends(get_session)):
-    user_id = get_current_user()
+def update_todo(todo_id: int, update: TodoUpdate, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
+    user_id = get_current_user(token, db).id
     todo = db.get(Todo, todo_id)
     if not todo or todo.user_id != user_id:
         raise HTTPException(status_code=404, detail="Todo not found")
@@ -50,8 +51,8 @@ def update_todo(todo_id: int, update: TodoUpdate, db: Session = Depends(get_sess
     return todo
 
 @router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_todo(todo_id: int, db: Session = Depends(get_session)):
-    user_id = get_current_user()
+def delete_todo(todo_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session)):
+    user_id = get_current_user(token, db).id
     todo = db.get(Todo, todo_id)
     if not todo or todo.user_id != user_id:
         raise HTTPException(status_code=404, detail="Todo not found")

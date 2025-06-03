@@ -1,8 +1,15 @@
+# import debugpy
+
 from fastapi import FastAPI
 from app.api import router as api_router
 from app.db.init_db import init_db
 from fastapi.middleware.cors import CORSMiddleware
 from app.graphql import graphql_app
+
+# debugpy.listen(("0.0.0.0", 5678))
+# print("Waiting for debugger to attach...")
+# debugpy.wait_for_client()
+# print("Debugger attached")
 
 def lifespan(app: FastAPI):
     init_db()
