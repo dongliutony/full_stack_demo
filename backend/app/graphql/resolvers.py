@@ -14,9 +14,9 @@ def get_todos_by_user(user_id: int) -> list[TodoModel]:
     with Session(engine) as session:
         return session.exec(select(TodoModel).where(TodoModel.user_id == user_id)).all()
 
-def create_todo(user_id: int, title: str, description: str = None) -> TodoModel:
+def create_todo(user_id: int, title: str, description: str = None, due_date: datetime = None) -> TodoModel:
     with Session(engine) as session:
-        todo = TodoModel(user_id=user_id, title=title, description=description)
+        todo = TodoModel(user_id=user_id, title=title, description=description, due_date=due_date)
         session.add(todo)
         session.commit()
         session.refresh(todo)

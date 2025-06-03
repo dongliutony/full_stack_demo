@@ -22,9 +22,11 @@ class TodoHistory:
 @strawberry.type
 class Todo:
     id: int
+    user_id: int
     title: str
     description: Optional[str]
-    completed: bool
+    due_date: Optional[datetime]
+    is_completed: bool
     created_at: datetime
     updated_at: datetime
 
@@ -53,12 +55,14 @@ class Query:
 @strawberry.type
 class Mutation:
     @strawberry.field
-    def create_todo(self, user_id: int, title: str, description: Optional[str] = None) -> Todo:
-        return create_todo_resolver(user_id, title, description)
+    def create_todo(self, user_id: int, title: str, description: Optional[str] = None, due_date: Optional[datetime] = None) -> Todo:
+        return create_todo_resolver(user_id, title, description, due_date)
 
     @strawberry.field
-    def update_todo(self, id: int, title: Optional[str] = None, description: Optional[str] = None) -> Todo:
+    def update_todo(self, id: int, title: Optional[str] = None, description: Optional[str] = None, is_completed: Optional[bool] = None) -> Todo:
         update_data = {}
+        if is_completed is not None:
+            update_data["is_completed"] = is_completed
         if title is not None:
             update_data["title"] = title
         if description is not None:

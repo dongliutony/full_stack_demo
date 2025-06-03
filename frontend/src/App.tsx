@@ -9,16 +9,21 @@ import TodoList from "./pages/todos/list";
 import TodoCreate from "./pages/todos/create";
 import TodoEdit from "./pages/todos/edit";
 import TodoShow from "./pages/todos/show";
+import GraphTodoList from "./pages/graph_todos/list";
+import GraphTodoCreate from "./pages/graph_todos/create";
+import GraphTodoEdit from "./pages/graph_todos/edit";
+import GraphTodoShow from "./pages/graph_todos/show";
 
 import "@refinedev/antd/dist/reset.css";
-import { dataProvider } from "./refine/dataProvider";
+import * as providers from "./refine/dataProvider";
+// import { dataProvider } from "./refine/dataProvider";
 
 const App: React.FC = () => {
     return (
         <BrowserRouter>
             <ConfigProvider theme={RefineThemes.Blue}>
                 <Refine 
-                dataProvider={dataProvider}
+                // dataProvider={dataProvider}
                 resources = {[
                     {
                         name: "todos",
@@ -27,7 +32,26 @@ const App: React.FC = () => {
                         edit: "/todos/edit/:id",
                         show: "/todos/show/:id",
                     },
-                ]}>
+                    {
+                        name: "graph_todos",
+                        list: "/graph_todos",
+                        create: "/graph_todos/create",
+                        edit: "/graph_todos/edit/:id",
+                        show: "/graph_todos/show/:id",
+                        options: {
+                            label: "Graphql Todos",
+                            icon: <CheckCircleOutlined style={{ color: "#52c41a" }} />,
+                        },
+                        meta: {
+                            dataProviderName: "graphql"
+                        }
+                    },
+                ]}
+                dataProvider={{
+                    default: providers.dataProvider,
+                    graphql: providers.dataProviderGraphql
+                }}
+                >
                     <ThemedLayoutV2
                     Title={({ collapsed }) => (
                             <div style={{ display: "flex", alignItems: "center" }}>
@@ -42,6 +66,10 @@ const App: React.FC = () => {
                             <Route path="/todos/create" element={<TodoCreate />} />
                             <Route path="/todos/edit/:id" element={<TodoEdit />} />
                             <Route path="/todos/show/:id" element={<TodoShow />} />
+                            <Route path="/graph_todos" element={<GraphTodoList />} />
+                            <Route path="/graph_todos/create" element={<GraphTodoCreate />} />
+                            <Route path="/graph_todos/edit/:id" element={<GraphTodoEdit />} />
+                            <Route path="/graph_todos/show/:id" element={<GraphTodoShow />} />
                         </Routes>
                     </ThemedLayoutV2>
                 </Refine>

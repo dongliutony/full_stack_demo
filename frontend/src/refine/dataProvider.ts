@@ -1,7 +1,116 @@
 import { DataProvider } from "@refinedev/core";
 import axios from "axios";
 
+const GRAPHQL_URL = "http://127.0.0.1:8000/graphql";
 const API_URL = "http://127.0.0.1:8000/api";
+
+function graphqlRequest(query: string, variables?: any) {
+  return axios.post(GRAPHQL_URL, {
+    query,
+    variables,
+  });
+}
+
+export const dataProviderGraphql: DataProvider = {
+  getList: async ({ resource }) => {
+    const query = `
+      query GetTodos($userId: Int!) {
+        getTodos(userId: $userId) {
+          id
+          userId
+          title
+          description
+          dueDate
+          isCompleted
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+    const response = await graphqlRequest(query, { userId: 1 });
+    return {
+      data: response.data.data.getTodos,
+      total: response.data.data.getTodos.length,
+    };
+  },
+
+  getOne: async ({ resource, id }) => {
+    const query = `
+      query GetTodo($id: Int!) {
+        getTodo(id: $id) {
+          id
+          userId
+          title
+          description
+          dueDate
+          isCompleted
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+    const response = await graphqlRequest(query, { id: Number(id) });
+    return {
+      data: response.data.data.getTodo,
+    };
+  },
+
+  create: async ({ resource, variables }) => {
+    const query = `
+      mutation CreateTodo($title: String!, $description: String, $due_date: DateTime) {
+        createTodo(userId: 1, title: $title, description: $description, dueDate: $due_date) {
+          id
+          title
+          description
+          dueDate
+          isCompleted
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+    const response = await graphqlRequest(query, variables);
+    return {
+      data: response.data.data.createTodo,
+    };
+  },
+
+  update: async ({ resource, id, variables }) => {
+    // 只支持 graph_todos，实际调用 update_todo mutation
+    const query = `
+      mutation UpdateTodo($id: Int!, $title: String, $description: String, $isCompleted: Boolean) {
+        updateTodo(id: $id, title: $title, description: $description, isCompleted: $isCompleted) {
+          id
+          userId
+          title
+          description
+          dueDate
+          isCompleted
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+    const response = await graphqlRequest(query, { id: Number(id), ...variables });
+    return {
+      data: response.data.data.updateTodo,
+    };
+  },
+
+  deleteOne: async ({ resource, id }) => {
+    const query = `
+      mutation DeleteTodo($id: Int!) {
+        deleteTodo(id: $id)
+      }
+    `;
+    const response = await graphqlRequest(query, { id: Number(id) });
+    return {
+      data: { id } as any,
+    };
+  },
+
+  getApiUrl: () => GRAPHQL_URL,
+};
 
 export const dataProvider: DataProvider = {
   getList: async ({ resource, pagination, filters, sorters, meta }) => {
@@ -42,6 +151,8 @@ export const dataProvider: DataProvider = {
   },
 
   getApiUrl: () => API_URL,
-
-  // 其余可选方法可后续添加，如 getMany, createMany 等
 };
+
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
