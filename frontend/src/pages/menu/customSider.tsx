@@ -50,7 +50,13 @@ export const CustomSider = (props: any) => {
                           key: "logout",
                           icon: <LogoutOutlined />,
                           label: "Logout",
-                          onClick: () => logout(),
+                          onClick: () => {
+                            logout(undefined, {
+                                onSuccess: () => {
+                                    navigate("/todos");
+                                },
+                            });
+                          },
                       }
                     : {
                           key: "login",

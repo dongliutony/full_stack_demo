@@ -1,16 +1,24 @@
-import { useLogin, useNavigation } from "@refinedev/core";
+import { useLogin, useNavigation, useGetIdentity } from "@refinedev/core";
+import { useEffect } from "react";
 import { Form, Input, Button, Card } from "antd";
 
 export default function Login() {
     const navigation = useNavigation();
     const { mutate: login, isLoading } = useLogin();
+    const { data: identity } = useGetIdentity();
+
+    useEffect(() => {
+        if (identity) {
+            navigation.push("/todos");
+        }
+    }, [identity, navigation]);
 
     const onFinish = (values: any) => {
         login(
             { username: values.email, password: values.password },
             {
                 onSuccess: () => {
-                    navigation.push("/todos");
+                    window.location.href = "/todos";
                 },
             }
         );
