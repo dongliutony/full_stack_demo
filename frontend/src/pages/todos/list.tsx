@@ -4,6 +4,8 @@ import { useList, useCreate, useUpdate } from "@refinedev/core";
 import { List, Table, Button, Modal, Form, Input, message, DatePicker } from "antd";
 import dayjs from "dayjs";
 
+console.log("TodoList loaded");
+
 export const TodoList: React.FC = () => {
     const { data, isLoading, refetch } = useList({ resource: "todos" });
     const [modalVisible, setModalVisible] = useState(false);

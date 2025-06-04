@@ -16,6 +16,7 @@ export const authProvider: AuthProvider = {
         if (!response.ok) throw new Error("Login failed");
         const data = await response.json();
         localStorage.setItem("token", data.access_token);
+        localStorage.setItem("user", JSON.stringify(data));
         return {
             success: true,
         }
@@ -30,6 +31,7 @@ export const authProvider: AuthProvider = {
 
   logout: async () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     return {
       success: true,
     };
@@ -42,4 +44,12 @@ export const authProvider: AuthProvider = {
   },
 
   onError: async (error) => ({}),
+
+  getIdentity: async () => {
+    const user = localStorage.getItem("user");
+    if (user) {
+        return JSON.parse(user);
+    }
+    return null;
+  },
 };
