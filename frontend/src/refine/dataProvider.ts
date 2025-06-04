@@ -1,11 +1,11 @@
 import { DataProvider } from "@refinedev/core";
-import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
 const GRAPHQL_URL = "http://127.0.0.1:8000/graphql";
 const API_URL = "http://127.0.0.1:8000/api";
 
 function graphqlRequest(query: string, variables?: any) {
-  return axios.post(GRAPHQL_URL, {
+  return axiosInstance.post(GRAPHQL_URL, {
     query,
     variables,
   });
@@ -27,7 +27,7 @@ export const dataProviderGraphql: DataProvider = {
         }
       }
     `;
-    const response = await graphqlRequest(query, { userId: 1 });
+    const response = await graphqlRequest(query, { userId: 4 });
     return {
       data: response.data.data.getTodos,
       total: response.data.data.getTodos.length,
@@ -115,7 +115,7 @@ export const dataProviderGraphql: DataProvider = {
 export const dataProvider: DataProvider = {
   getList: async ({ resource, pagination, filters, sorters, meta }) => {
     // 目前后端不支持分页/过滤/排序，直接获取全部
-    const response = await axios.get(`${API_URL}/${resource}`);
+    const response = await axiosInstance.get(`${API_URL}/${resource}`);
     return {
       data: response.data,
       total: response.data.length,
@@ -123,21 +123,21 @@ export const dataProvider: DataProvider = {
   },
 
   getOne: async ({ resource, id, meta }) => {
-    const response = await axios.get(`${API_URL}/${resource}/${id}`);
+    const response = await axiosInstance.get(`${API_URL}/${resource}/${id}`);
     return {
       data: response.data,
     };
   },
 
   create: async ({ resource, variables, meta }) => {
-    const response = await axios.post(`${API_URL}/${resource}`, variables);
+    const response = await axiosInstance.post(`${API_URL}/${resource}`, variables);
     return {
       data: response.data,
     };
   },
 
   update: async ({ resource, id, variables, meta }) => {
-    const response = await axios.put(`${API_URL}/${resource}/${id}`, variables);
+    const response = await axiosInstance.put(`${API_URL}/${resource}/${id}`, variables);
     return {
       data: response.data,
     };

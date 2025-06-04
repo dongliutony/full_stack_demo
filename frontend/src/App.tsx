@@ -1,9 +1,10 @@
 import React from "react";
-import { Refine } from "@refinedev/core";
+import { Refine, Authenticated } from "@refinedev/core";
 import { RefineThemes, ThemedLayoutV2, ThemedTitleV2, Title } from "@refinedev/antd";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ConfigProvider } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { authProvider } from "./refine/authProvider";
 
 import TodoList from "./pages/todos/list";
 import TodoCreate from "./pages/todos/create";
@@ -13,6 +14,7 @@ import GraphTodoList from "./pages/graph_todos/list";
 import GraphTodoCreate from "./pages/graph_todos/create";
 import GraphTodoEdit from "./pages/graph_todos/edit";
 import GraphTodoShow from "./pages/graph_todos/show";
+import Login from "./pages/login";
 
 import "@refinedev/antd/dist/reset.css";
 import * as providers from "./refine/dataProvider";
@@ -51,6 +53,7 @@ const App: React.FC = () => {
                     default: providers.dataProvider,
                     graphql: providers.dataProviderGraphql
                 }}
+                authProvider={authProvider}
                 >
                     <ThemedLayoutV2
                     Title={({ collapsed }) => (
@@ -62,7 +65,12 @@ const App: React.FC = () => {
                     >
                         <Routes>
                             <Route path="/" element={<div>Hello World!</div>} />
-                            <Route path="/todos" element={<TodoList />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/todos" element={
+                                <Authenticated key="todos-auth" fallback={<Login />}>
+                                    <TodoList />
+                                </Authenticated>
+                            } />
                             <Route path="/todos/create" element={<TodoCreate />} />
                             <Route path="/todos/edit/:id" element={<TodoEdit />} />
                             <Route path="/todos/show/:id" element={<TodoShow />} />
