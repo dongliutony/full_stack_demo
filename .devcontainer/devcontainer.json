@@ -1,0 +1,34 @@
+{
+  "name": "FastAPI + React Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11-node", 
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+  },
+  "forwardPorts": [8000, 5173],
+  "postCreateCommand": "pip install -r backend/requirements.txt && cd frontend && npm install",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  },
+  "portsAttributes": {
+    "8000": {
+      "label": "FastAPI",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Vite",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "vscode"
+}
