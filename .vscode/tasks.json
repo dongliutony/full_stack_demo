@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start FastAPI",
+      "type": "shell",
+      "command": "uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Frontend",
+      "type": "shell",
+      "command": "cd frontend && npm run dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Full Stack",
+      "dependsOn": ["Start FastAPI", "Start Frontend"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}
